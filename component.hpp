@@ -70,4 +70,3 @@ class Component {
 };
 
 #endif //COMPONENT_H
-

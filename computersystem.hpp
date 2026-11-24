@@ -7,7 +7,7 @@
 // Gives access to the component matching a card's suit, calculates total
 // remaining HP, and reports whether the whole system is destroyed.
 //
-// Suits are passed as ints, matching the suit constants in card.hpp:
+// Suits are passed as ints, using the same numbering as the Card class:
 //   0 = HEARTS   -> CPU
 //   1 = DIAMONDS -> Memory
 //   2 = CLUBS    -> Network
