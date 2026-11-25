@@ -7,6 +7,8 @@
 #define GAMEUI_HPP
 
 #include <string> //for storing player names and messages
+#include <vector>
+#include "card.hpp"
 
 using namespace std;
 
@@ -34,7 +36,7 @@ public:
     void displayComponents(
         const string& playerName,
         int totalHP); //show player HP
-    void displayHand(int handSize); //show number of cards
+    void displayHand(const vector<Card>& hand); //show number of cards
     void displayTurnMenu(
         bool canDraw,
         bool canPlay); //show available actions

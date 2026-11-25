@@ -62,7 +62,7 @@ private:
     std::vector<Card> hand;
 
     // player's system of components
-    ComponentStatus system;
+    ComputerSystem system;
 
     // hand size validation
     static constexpr std::size_t MAX_HAND_SIZE = 5;
@@ -109,4 +109,3 @@ public:
 };
 
 #endif
-

@@ -142,10 +142,18 @@ void GameUI::displayComponents(
     //requires System and Component interfaces
 }
 
-void GameUI::displayHand(int handSize) { //show player hand
+void GameUI::displayHand(const vector<Card>& hand) { //show player hand
     cout << "\n--- YOUR CARDS ---" << endl;
-    cout << "Cards in hand: " << handSize << endl; //show hand size
+    cout << "Cards in hand: " << hand.size() << endl; //show hand size
 
+    if (hand.empty()) {
+        cout << "Your hand is empty." << endl;
+        return;
+    }
+    for (size_t i=0; i < hand.size(); i++) {
+        cout << i +1 << "."
+            << hand[i].getDescription() << endl;
+    }
     //TODO: display card ranks and suits
     //requires Card display interface
 }
@@ -198,7 +206,8 @@ int GameUI::getCardChoice(int handSize) { //select card
         return -1; //no valid card index
     }
 
-    cout << "Select card to play: "; //ask for card number
+    cout << "Select card to play: (1-"
+    << handSize << "): ";
 
     return getValidInput(1, handSize) - 1; //convert to index
 }
