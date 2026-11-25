@@ -17,17 +17,20 @@ GameUI::GameUI() { //default constructor
 }
 
 void GameUI::displayTitleScreen() { //show main menu
-    cout << "\n--- VIRUS.EXE ---" << endl;
-    cout << "1. Player vs. Player" << endl;
-    cout << "2. Rules" << endl;
-    cout << "3. Quit" << endl;
+
+    cout << "\n-- VIRUS.EXE --" << endl; //show game title
+    cout << "1. Player vs. Player" << endl; //show game option
+    cout << "2. Rules" << endl; //show rules option
+    cout << "3. Quit" << endl; //show quit option
 }
 
 int GameUI::getValidInput(int min, int max) { //check user input
+
     string input; //store entered text
     int choice; //store choice number
 
     while (true) { //repeat until input is valid
+
         if (!getline(cin, input)) { //read user input
             throw runtime_error("Input stream closed"); //stop on EOF
         }
@@ -48,11 +51,14 @@ int GameUI::getValidInput(int min, int max) { //check user input
 }
 
 int GameUI::getMenuChoice() { //get main menu selection
+
     cout << "Enter your choice: "; //ask for menu option
+
     return getValidInput(1, 3); //accept options 1 to 3
 }
 
 string GameUI::getPlayerName(int playerNumber) { //get player name
+
     string name; //store player name
 
     cout << "Enter Player " << playerNumber
@@ -70,110 +76,199 @@ string GameUI::getPlayerName(int playerNumber) { //get player name
 }
 
 void GameUI::displayRules() { //show game rules
-    cout << "\n--- GAME RULES ---" << endl;
 
-    cout << "Each player has 4 computer components." << endl;
-    cout << "CPU: 20 HP" << endl;
-    cout << "Memory: 10 HP" << endl;
-    cout << "Network: 5 HP" << endl;
-    cout << "Storage: 15 HP" << endl;
+    cout << "\n--- GAME RULES ---" << endl; //show rules title
 
-    cout << "\nEach player starts with 5 cards." << endl;
-    cout << "Draw or play one card per turn." << endl;
+    cout << "Each player has 4 computer components." << endl; //show system structure
 
-    cout << "\nCards 2-10 deal damage." << endl;
-    cout << "Jack heals 2 HP." << endl;
-    cout << "Queen heals 4 HP." << endl;
-    cout << "King heals 6 HP." << endl;
-    cout << "Ace gives a shield for one turn." << endl;
+    cout << "CPU: 20 HP" << endl; //show CPU health
+    cout << "Memory: 10 HP" << endl; //show memory health
+    cout << "Network: 5 HP" << endl; //show network health
+    cout << "Storage: 15 HP" << endl; //show storage health
 
-    cout << "\nDestroy all opponent components to win." << endl;
-    cout << "If the deck runs out, highest HP wins." << endl;
+    cout << "\nEach player starts with 5 cards." << endl; //show starting hand
+    cout << "Draw or play one card per turn." << endl; //show turn rules
+
+    cout << "\nCards 2-10 deal damage." << endl; //show attack cards
+    cout << "Jack heals 2 HP." << endl; //show Jack effect
+    cout << "Queen heals 4 HP." << endl; //show Queen effect
+    cout << "King heals 6 HP." << endl; //show King effect
+    cout << "Ace gives a shield for one turn." << endl; //show Ace effect
+
+    cout << "\nDestroy all opponent components to win." << endl; //show win condition
+    cout << "If the deck runs out, highest HP wins." << endl; //show deck condition
 }
 
 void GameUI::displayGameResult(GameResult result) { //show result
-    cout << "\n--- GAME OVER ---" << endl;
+
+    cout << "\n--- GAME OVER ---" << endl; //show game ending
 
     if (result == GameResult::Player1Win) { //first player wins
+
         cout << "Winner: Player 1" << endl; //show first player
     }
     else if (result == GameResult::Player2Win) { //second player wins
+
         cout << "Winner: Player 2" << endl; //show second player
     }
     else { //both players have equal result
+
         cout << "The game is a draw." << endl; //show draw
     }
 }
 
 void GameUI::displayGameEndMenu() { //show end menu
-    cout << "\n--- GAME FINISHED ---" << endl;
-    cout << "1. Play Again" << endl;
-    cout << "2. Quit" << endl;
+
+    cout << "\n--- GAME FINISHED ---" << endl; //show end menu title
+
+    cout << "1. Play Again" << endl; //show replay option
+    cout << "2. Quit" << endl; //show quit option
 }
 
 int GameUI::getGameEndChoice() { //read end menu choice
+
     cout << "Enter your choice: "; //ask for selection
+
     return getValidInput(1, 2); //accept replay or quit
 }
 
 void GameUI::displayInvalidInput() { //show input error
-    cout << "Invalid input. Try again." << endl;
+
+    cout << "Invalid input. Try again." << endl; //show error message
 }
 
 void GameUI::displayGoodbye() { //show goodbye message
-    cout << "\n--- END OF PROGRAM ---" << endl;
+
+    cout << "\n--- END OF PROGRAM ---" << endl; //show program ending
 }
 
 void GameUI::displayTurn(
     const string& playerName) { //show current turn
 
-    cout << "\n--- CURRENT TURN ---" << endl;
-    cout << "Player: " << playerName << endl; //show player name
+    cout << "\n--- CURRENT TURN ---" << endl; //show turn title
+
+    cout << "Player: "
+         << playerName << endl; //show player name
+}
+
+void GameUI::displayTurnDivider(
+    const string& playerName) { //separate player turns
+
+    cout << "\nPress Enter to finish your turn..."; //allow player to read action result
+
+    string input; //store player input
+
+    if (!getline(cin, input)) { //wait for current player
+        throw runtime_error("Input stream closed"); //stop on EOF
+    }
+
+    cout << string(60, '\n'); //hide previous player's cards
+
+    cout << "\033[2J\033[H"; //clear visible terminal screen
+
+    cout << string(50, '=') << endl; //show divider line
+
+    cout << "\n           TURN COMPLETED\n" << endl; //show completed turn
+
+    cout << "Pass the computer to "
+         << playerName << endl; //show next player
+
+    cout << "\nPress Enter when ready...\n"; //wait for next player
+
+    cout << string(50, '=') << endl; //show bottom divider
+
+    if (!getline(cin, input)) { //wait for next player's confirmation
+        throw runtime_error("Input stream closed"); //stop on EOF
+    }
+
+    cout << "\033[2J\033[H"; //clear transition screen
+
+    cout << string(50, '=') << endl; //show new turn divider
 }
 
 void GameUI::displayComponents(
     const string& playerName,
-    int totalHP) { //show component health summary
+    const ComputerSystem& system) { //show component health summary
 
-    cout << playerName << " total HP: "
-         << totalHP << endl; //show combined component HP
+    cout << "\n--- "
+         << playerName
+         << " SYSTEM ---" << endl; //show player system
 
-    //TODO: display individual components and shields
-    //requires System and Component interfaces
+    int totalHP = 0; //store combined current HP
+    int maxHP = 0; //store combined maximum HP
+
+    for (int i = 0; i < 4; i++) { //display all four components
+
+        const Component& component =
+            system.getComponent(i); //get current component
+
+        cout << component.getName() << ": " //show component name
+             << component.getCurrentHP() << "/" //show current HP
+             << component.getMaxHP() << " HP"; //show maximum HP
+
+        if (component.isDestroyed()) { //check destroyed component
+
+            cout << " [DESTROYED]"; //show destroyed status
+        }
+        else if (component.isShielded()) { //check active shield
+
+            cout << " [SHIELDED]"; //show shield status
+        }
+
+        cout << endl; //move to next component
+
+        totalHP += component.getCurrentHP(); //add current component HP
+
+        maxHP += component.getMaxHP(); //add maximum component HP
+    }
+
+    cout << "Total HP: "
+         << totalHP << "/"
+         << maxHP << " HP" << endl; //show combined system HP
 }
 
-void GameUI::displayHand(const vector<Card>& hand) { //show player hand
-    cout << "\n--- YOUR CARDS ---" << endl;
-    cout << "Cards in hand: " << hand.size() << endl; //show hand size
+void GameUI::displayHand(
+    const vector<Card>& hand) { //show player hand
 
-    if (hand.empty()) {
-        cout << "Your hand is empty." << endl;
-        return;
+    cout << "\n--- YOUR CARDS ---" << endl; //show hand title
+
+    cout << "Cards in hand: "
+         << hand.size() << endl; //show hand size
+
+    if (hand.empty()) { //check for empty hand
+
+        cout << "Your hand is empty." << endl; //show empty hand
+
+        return; //stop displaying cards
     }
-    for (size_t i=0; i < hand.size(); i++) {
-        cout << i +1 << "."
-            << hand[i].getDescription() << endl;
+
+    for (size_t i = 0; i < hand.size(); i++) { //display each card
+
+        cout << i + 1 << ". " //show card number
+             << hand[i].getDescription()
+             << endl; //show card rank and suit
     }
-    //TODO: display card ranks and suits
-    //requires Card display interface
 }
 
 void GameUI::displayTurnMenu(
     bool canDraw,
     bool canPlay) { //show available turn actions
 
-    cout << "\n--- CHOOSE ACTION ---" << endl;
+    cout << "\n--- CHOOSE ACTION ---" << endl; //show action menu
 
     if (canDraw) { //drawing is available
+
         cout << "1. Draw Card" << endl; //show draw option
     }
 
     if (canPlay) { //playing is available
+
         cout << "2. Play Card" << endl; //show play option
     }
 
     if (!canDraw && !canPlay) { //no action available
-        cout << "No actions available." << endl;
+
+        cout << "No actions available." << endl; //show unavailable actions
     }
 }
 
@@ -182,18 +277,23 @@ int GameUI::getTurnChoice(
     bool canPlay) { //read current player's action
 
     if (!canDraw && !canPlay) { //check for unavailable actions
+
         return 0; //skip current turn
     }
 
     while (true) { //repeat until action is valid
+
         cout << "Choose action: "; //ask for action
+
         int choice = getValidInput(1, 2); //read action
 
         if (choice == 1 && canDraw) { //check draw action
+
             return 1; //return draw choice
         }
 
         if (choice == 2 && canPlay) { //check play action
+
             return 2; //return play choice
         }
 
@@ -202,12 +302,14 @@ int GameUI::getTurnChoice(
 }
 
 int GameUI::getCardChoice(int handSize) { //select card
+
     if (handSize <= 0) { //check for empty hand
+
         return -1; //no valid card index
     }
 
-    cout << "Select card to play: (1-"
-    << handSize << "): ";
+    cout << "Select card to play (1-"
+         << handSize << "): "; //show available card numbers
 
     return getValidInput(1, handSize) - 1; //convert to index
 }

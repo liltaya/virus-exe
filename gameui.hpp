@@ -7,8 +7,9 @@
 #define GAMEUI_HPP
 
 #include <string> //for storing player names and messages
-#include <vector>
-#include "card.hpp"
+#include <vector> //for storing player cards
+#include "card.hpp" //include Card class
+#include "computersystem.hpp" //include ComputerSystem class
 
 using namespace std;
 
@@ -32,11 +33,19 @@ public:
     void displayInvalidInput(); //show invalid input message
     void displayGoodbye(); //show program ending
 
-    void displayTurn(const string& playerName); //show current turn
+    void displayTurn(
+        const string& playerName); //show current turn
+
+    void displayTurnDivider(
+        const string& playerName); //separate player turns
+
     void displayComponents(
         const string& playerName,
-        int totalHP); //show player HP
-    void displayHand(const vector<Card>& hand); //show number of cards
+        const ComputerSystem& system); //show component HP and shields
+
+    void displayHand(
+        const vector<Card>& hand); //show player cards
+
     void displayTurnMenu(
         bool canDraw,
         bool canPlay); //show available actions
@@ -46,7 +55,9 @@ public:
         bool canPlay); //read turn action
 
     int getCardChoice(int handSize); //read selected card
-    void displayMessage(const string& message); //show message
+
+    void displayMessage(
+        const string& message); //show message
 };
 
 #endif
