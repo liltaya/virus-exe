@@ -34,6 +34,7 @@ private:
     int turnsCompleted; //track completed turns
 
     bool isValidMove(int cardIndex); //check selected card
+    bool isPlayableCard(int playerNumber, const Card& card); //check if card target is alive
     void applyCardEffect(const Card& card); //apply card effect
     void checkWinner(); //check game result
     void removeExpiredShields(); //remove old shields

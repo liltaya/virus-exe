@@ -50,6 +50,93 @@ int GameUI::getValidInput(int min, int max) { //check user input
     }
 }
 
+string GameUI::getSuitName(int suit) const { //get suit name
+
+    if (suit == 0) { //check hearts
+
+        return "Hearts"; //hearts suit
+    }
+    else if (suit == 1) { //check diamonds
+
+        return "Diamonds"; //diamonds suit
+    }
+    else if (suit == 2) { //check clubs
+
+        return "Clubs"; //clubs suit
+    }
+    else if (suit == 3) { //check spades
+
+        return "Spades"; //spades suit
+    }
+
+    return "Unknown"; //invalid suit
+}
+
+string GameUI::getComponentName(int suit) const { //get component for suit
+
+    if (suit == 0) { //hearts target
+
+        return "CPU"; //hearts hits CPU
+    }
+    else if (suit == 1) { //diamonds target
+
+        return "Memory"; //diamonds hits memory
+    }
+    else if (suit == 2) { //clubs target
+
+        return "Network"; //clubs hits network
+    }
+    else if (suit == 3) { //spades target
+
+        return "Storage"; //spades hits storage
+    }
+
+    return "Unknown"; //invalid suit
+}
+
+string GameUI::getCardAction(
+    const Card& card,
+    const ComputerSystem& ownSystem,
+    const ComputerSystem& opponentSystem) const { //describe card effect
+
+    int suit = card.getSuit(); //get card suit
+
+    int rank = card.getRank(); //get card rank
+
+    if (suit < 0 || suit > 3) { //check suit range
+
+        return "no target"; //invalid card
+    }
+
+    string component = getComponentName(suit); //get target component
+
+    if (rank >= 2 && rank <= 10) { //check attack card
+
+        if (opponentSystem.getComponent(suit).isDestroyed()) { //check target status
+
+            return "opponent " + component +
+                   " destroyed, discard only"; //show dead target
+        }
+
+        return "attack opponent " + component +
+               " for " + to_string(card.getEffectValue()); //show attack
+    }
+
+    if (ownSystem.getComponent(suit).isDestroyed()) { //check own target status
+
+        return "your " + component +
+               " destroyed, discard only"; //show dead target
+    }
+
+    if (rank >= 11 && rank <= 13) { //check healing card
+
+        return "heal your " + component +
+               " +" + to_string(card.getEffectValue()); //show heal
+    }
+
+    return "shield your " + component; //ace shields component
+}
+
 int GameUI::getMenuChoice() { //get main menu selection
 
     cout << "Enter your choice: "; //ask for menu option
@@ -80,23 +167,27 @@ void GameUI::displayRules() { //show game rules
     cout << "\n--- GAME RULES ---" << endl; //show rules title
 
     cout << "Each player has 4 computer components." << endl; //show system structure
+    cout << "Each card suit targets one component." << endl; //show suit link
 
-    cout << "CPU: 20 HP" << endl; //show CPU health
-    cout << "Memory: 10 HP" << endl; //show memory health
-    cout << "Network: 5 HP" << endl; //show network health
-    cout << "Storage: 15 HP" << endl; //show storage health
+    cout << "\nHearts   -> CPU: 20 HP" << endl; //show CPU suit and health
+    cout << "Diamonds -> Memory: 10 HP" << endl; //show memory suit and health
+    cout << "Clubs    -> Network: 5 HP" << endl; //show network suit and health
+    cout << "Spades   -> Storage: 15 HP" << endl; //show storage suit and health
 
     cout << "\nEach player starts with 5 cards." << endl; //show starting hand
     cout << "Draw or play one card per turn." << endl; //show turn rules
 
-    cout << "\nCards 2-10 deal damage." << endl; //show attack cards
-    cout << "Jack heals 2 HP." << endl; //show Jack effect
-    cout << "Queen heals 4 HP." << endl; //show Queen effect
-    cout << "King heals 6 HP." << endl; //show King effect
-    cout << "Ace gives a shield for one turn." << endl; //show Ace effect
+    cout << "\nCards 2-10 deal damage to the opponent's component." << endl; //show attack cards
+    cout << "Jack heals 2 HP on your own component." << endl; //show Jack effect
+    cout << "Queen heals 4 HP on your own component." << endl; //show Queen effect
+    cout << "King heals 6 HP on your own component." << endl; //show King effect
+    cout << "Ace shields your own component for one turn." << endl; //show Ace effect
+    cout << "Destroyed components cannot be healed or shielded." << endl; //show destroyed rule
+    cout << "A card for a destroyed component is discarded with no effect." << endl; //show discard rule
 
     cout << "\nDestroy all opponent components to win." << endl; //show win condition
-    cout << "If the deck runs out, highest HP wins." << endl; //show deck condition
+    cout << "When the deck is empty, keep playing your hand." << endl; //show empty deck rule
+    cout << "Once the deck and both hands are empty, highest HP wins." << endl; //show deck condition
 }
 
 void GameUI::displayGameResult(GameResult result) { //show result
@@ -202,7 +293,8 @@ void GameUI::displayComponents(
         const Component& component =
             system.getComponent(i); //get current component
 
-        cout << component.getName() << ": " //show component name
+        cout << component.getName() //show component name
+             << " (" << getSuitName(i) << "): " //show matching suit
              << component.getCurrentHP() << "/" //show current HP
              << component.getMaxHP() << " HP"; //show maximum HP
 
@@ -228,7 +320,9 @@ void GameUI::displayComponents(
 }
 
 void GameUI::displayHand(
-    const vector<Card>& hand) { //show player hand
+    const vector<Card>& hand,
+    const ComputerSystem& ownSystem,
+    const ComputerSystem& opponentSystem) { //show player hand
 
     cout << "\n--- YOUR CARDS ---" << endl; //show hand title
 
@@ -245,8 +339,13 @@ void GameUI::displayHand(
     for (size_t i = 0; i < hand.size(); i++) { //display each card
 
         cout << i + 1 << ". " //show card number
-             << hand[i].getDescription()
-             << endl; //show card rank and suit
+             << hand[i].getDescription() //show card rank and suit
+             << " -> "
+             << getCardAction(
+                    hand[i],
+                    ownSystem,
+                    opponentSystem) //show card effect and target
+             << endl;
     }
 }
 

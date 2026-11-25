@@ -106,8 +106,24 @@ bool Game::isValidMove(int cardIndex) { //check selected card
         return false; //invalid suit or rank
     }
 
+    return true; //dead target cards can still be discarded
+}
+
+bool Game::isPlayableCard(int playerNumber, const Card& card) { //check card target
+
+    int suit = card.getSuit(); //get card suit
+
+    int rank = card.getRank(); //get card rank
+
+    if (suit < 0 || suit > 3 || rank < 1 || rank > 13) { //check card values
+
+        return false; //invalid suit or rank
+    }
+
+    Player& player = getPlayer(playerNumber); //get card owner
+
     Player& opponent = getPlayer(
-        currentPlayer == 1 ? 2 : 1 //get opposing player number
+        playerNumber == 1 ? 2 : 1 //get opposing player number
     );
 
     if (rank >= 2 && rank <= 10) { //check attack card
@@ -242,7 +258,17 @@ bool Game::removeCard(int cardIndex) { //play selected card
         card.getDescription() + "." //show played card
     );
 
-    applyCardEffect(card); //apply selected card effect
+    if (isPlayableCard(currentPlayer, card)) { //check if target is alive
+
+        applyCardEffect(card); //apply selected card effect
+    }
+    else { //target component already destroyed
+
+        ui.displayMessage(
+            "That component is already destroyed. " //explain no effect
+            "Card discarded with no effect."
+        );
+    }
 
     deck.discardCard(removedCard); //move card to discard pile
 
@@ -291,7 +317,12 @@ void Game::checkWinner() { //check if game ended
         return; //stop checking
     }
 
-    if (deck.isEmpty()) { //check empty deck
+    bool outOfCards =
+        deck.isEmpty() && //no cards left to draw
+        !player1.hasCards() && //first player played whole hand
+        !player2.hasCards(); //second player played whole hand
+
+    if (outOfCards) { //deck and both hands are used up
 
         int hp1 = player1.getTotalHP(); //get first player HP
 
@@ -323,12 +354,11 @@ void Game::nextTurn() { //switch to next player
 
     turnsCompleted++; //record completed turn
 
-    if (player1.isSystemDestroyed() ||
-        player2.isSystemDestroyed()) { //check destroyed systems
+    checkWinner(); //check systems, deck and hands
 
-        checkWinner(); //determine game winner
+    if (gameOver) { //check if game ended
 
-        return; //stop turn switching
+        return; //stop switching players
     }
 
     if (currentPlayer == 1) { //first player's turn ended
@@ -336,13 +366,6 @@ void Game::nextTurn() { //switch to next player
         currentPlayer = 2; //switch to second player
     }
     else { //second player's turn ended
-
-        checkWinner(); //check winner after full round
-
-        if (gameOver) { //check if game ended
-
-            return; //stop switching players
-        }
 
         currentPlayer = 1; //switch to first player
     }
@@ -375,7 +398,15 @@ void Game::playTurn() { //handle current player's turn
         player2.getSystem() //show second player's components
     );
 
-    ui.displayHand(player.getHand()); //show player hand
+    Player& opponent = getPlayer(
+        currentPlayer == 1 ? 2 : 1 //get opposing player number
+    );
+
+    ui.displayHand(
+        player.getHand(), //show player hand
+        player.getSystem(), //own components for heal and shield
+        opponent.getSystem() //opponent components for attacks
+    );
 
     bool canDraw =
         !player.isHandFull() && !deck.isEmpty(); //check draw action

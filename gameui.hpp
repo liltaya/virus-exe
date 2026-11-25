@@ -18,6 +18,12 @@ enum class GameResult; //forward declare game result
 class GameUI {
 private:
     int getValidInput(int min, int max); //validate user input
+    string getSuitName(int suit) const; //get suit name for component
+    string getComponentName(int suit) const; //get component hit by suit
+    string getCardAction(
+        const Card& card,
+        const ComputerSystem& ownSystem,
+        const ComputerSystem& opponentSystem) const; //describe what card does
 
 public:
     GameUI(); //default constructor
@@ -44,7 +50,9 @@ public:
         const ComputerSystem& system); //show component HP and shields
 
     void displayHand(
-        const vector<Card>& hand); //show player cards
+        const vector<Card>& hand,
+        const ComputerSystem& ownSystem,
+        const ComputerSystem& opponentSystem); //show player cards and targets
 
     void displayTurnMenu(
         bool canDraw,
