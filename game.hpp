@@ -35,6 +35,7 @@ private:
 
     bool isValidMove(int cardIndex); //check selected card
     bool isPlayableCard(int playerNumber, const Card& card); //check if card target is alive
+    void discardUnusableCards(); //remove dead target cards from hand
     void applyCardEffect(const Card& card); //apply card effect
     void checkWinner(); //check game result
     void removeExpiredShields(); //remove old shields

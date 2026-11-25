@@ -183,7 +183,8 @@ void GameUI::displayRules() { //show game rules
     cout << "King heals 6 HP on your own component." << endl; //show King effect
     cout << "Ace shields your own component for one turn." << endl; //show Ace effect
     cout << "Destroyed components cannot be healed or shielded." << endl; //show destroyed rule
-    cout << "A card for a destroyed component is discarded with no effect." << endl; //show discard rule
+    cout << "Cards for a destroyed component are discarded automatically." << endl; //show discard rule
+    cout << "If you draw one, you draw again. This does not use your turn." << endl; //show redraw rule
 
     cout << "\nDestroy all opponent components to win." << endl; //show win condition
     cout << "When the deck is empty, keep playing your hand." << endl; //show empty deck rule
