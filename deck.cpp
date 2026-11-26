@@ -1,3 +1,8 @@
+// Alina Beg
+// 301593470
+// ENSC 251: Software Design and Analysis for Engineers
+// virus.exe Deck Class
+
 #include "deck.hpp"
 #include "player.hpp" // so we can directly add card to players hand when card drawn from deck
 #include <cstdlib> // need rand() and srand(), for shuffling
