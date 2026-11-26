@@ -1,4 +1,8 @@
-// ENSC 251, alina beg 301593470
+// Alina Beg
+// 301593470
+// ENSC 251: Software Design and Analysis for Engineers
+// virus.exe Card Class
+
 #ifndef CARD_H
 #define CARD_H
 
