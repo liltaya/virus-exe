@@ -1,4 +1,8 @@
-// ENSC 251 Alina Beg 301593470
+// Alina Beg
+// 301593470
+// ENSC 251: Software Design and Analysis for Engineers
+// virus.exe Deck Class
+
 #ifndef DECK_H
 #define DECK_H
 
