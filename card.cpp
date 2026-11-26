@@ -2,6 +2,7 @@
 // 301593470
 // ENSC 251: Software Design and Analysis for Engineers
 // virus.exe Card Class
+
 #include "card.hpp"
 
 // default constructor
