@@ -175,7 +175,8 @@ void GameUI::displayRules() { //show game rules
     cout << "Spades   -> Storage: 15 HP" << endl; //show storage suit and health
 
     cout << "\nEach player starts with 5 cards." << endl; //show starting hand
-    cout << "Draw or play one card per turn." << endl; //show turn rules
+    cout << "You draw one card automatically at the start of your turn." << endl; //show auto draw rule
+    cout << "Then draw or play one card." << endl; //show turn rules
 
     cout << "\nCards 2-10 deal damage to the opponent's component." << endl; //show attack cards
     cout << "Jack heals 2 HP on your own component." << endl; //show Jack effect
@@ -183,8 +184,8 @@ void GameUI::displayRules() { //show game rules
     cout << "King heals 6 HP on your own component." << endl; //show King effect
     cout << "Ace shields your own component for one turn." << endl; //show Ace effect
     cout << "Destroyed components cannot be healed or shielded." << endl; //show destroyed rule
-    cout << "Cards for a destroyed component are discarded automatically." << endl; //show discard rule
-    cout << "If you draw one, you draw again. This does not use your turn." << endl; //show redraw rule
+    cout << "Cards in your hand for a destroyed component are discarded automatically." << endl; //show discard rule
+    cout << "You only draw cards you can use. Others go to the bottom of the deck." << endl; //show redraw rule
 
     cout << "\nDestroy all opponent components to win." << endl; //show win condition
     cout << "When the deck is empty, keep playing your hand." << endl; //show empty deck rule

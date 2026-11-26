@@ -20,8 +20,11 @@ Game::Game(
       currentPlayer(1), //first player starts
       gameOver(false), //game is not finished
       winner(""), //no winner yet
-      turnsCompleted(0) //no turns completed
+      turnsCompleted(0), //no turns completed
+      drewThisTurn(false) //no card drawn yet
 {
+    noUsableCards[0] = false; //first player can still draw
+    noUsableCards[1] = false; //second player can still draw
 }
 
 Player& Game::getCurrentPlayer() { //get current player
@@ -72,9 +75,17 @@ bool Game::addCard() { //draw one card
         return false; //deck has no cards
     }
 
+    if (noUsableCards[currentPlayer - 1]) { //already searched whole deck
+
+        return false; //nothing left this player can use
+    }
+
     Player& player = getCurrentPlayer(); //get current player
 
-    while (!deck.isEmpty()) { //keep drawing until a usable card
+    int cardsToCheck =
+        deck.cardsRemaining(); //each card in deck gets checked once
+
+    for (int i = 0; i < cardsToCheck; i++) { //keep drawing until a usable card
 
         if (!deck.drawCard(player)) { //draw card into hand
 
@@ -89,6 +100,10 @@ bool Game::addCard() { //draw one card
 
         if (isPlayableCard(currentPlayer, drawnCard)) { //check drawn card target
 
+            ui.displayMessage(
+                "You drew " + drawnCard.getDescription() + "." //show usable card
+            );
+
             return true; //usable card drawn
         }
 
@@ -96,16 +111,13 @@ bool Game::addCard() { //draw one card
 
         player.removeCard(lastIndex, removedCard); //take card back out of hand
 
-        deck.discardCard(removedCard); //move card to discard pile
-
-        ui.displayMessage(
-            "Drew " + drawnCard.getDescription() + //show drawn card
-            " but its target is destroyed. Discarded and drawing again." //explain redraw
-        );
+        deck.returnToBottom(removedCard); //put unusable card under the deck
     }
 
+    noUsableCards[currentPlayer - 1] = true; //destroyed parts never come back
+
     ui.displayMessage(
-        "No playable cards left in the deck." //deck ran out during redraw
+        "No usable cards left in the deck." //whole deck checked
     );
 
     return false; //no usable card found
@@ -361,8 +373,15 @@ void Game::checkWinner() { //check if game ended
         return; //stop checking
     }
 
+    bool player1OutOfDraws =
+        deck.isEmpty() || noUsableCards[0]; //first player has nothing to draw
+
+    bool player2OutOfDraws =
+        deck.isEmpty() || noUsableCards[1]; //second player has nothing to draw
+
     bool outOfCards =
-        deck.isEmpty() && //no cards left to draw
+        player1OutOfDraws && //first player cannot draw
+        player2OutOfDraws && //second player cannot draw
         !player1.hasCards() && //first player played whole hand
         !player2.hasCards(); //second player played whole hand
 
@@ -414,6 +433,8 @@ void Game::nextTurn() { //switch to next player
         currentPlayer = 1; //switch to first player
     }
 
+    drewThisTurn = false; //next player gets their auto draw
+
     removeExpiredShields(); //update shield status
 
     ui.displayTurnDivider(
@@ -430,23 +451,33 @@ void Game::playTurn() { //handle current player's turn
 
     Player& player = getCurrentPlayer(); //get current player
 
+    Player& opponent = getPlayer(
+        currentPlayer == 1 ? 2 : 1 //get opposing player number
+    );
+
     ui.displayTurn(player.getName()); //show current player
 
     ui.displayComponents(
-        player1.getName(), //first player's name
-        player1.getSystem() //show first player's components
+        "YOUR", //label current player's system
+        player.getSystem() //show own components
     );
 
     ui.displayComponents(
-        player2.getName(), //second player's name
-        player2.getSystem() //show second player's components
+        "ENEMY", //label other player's system
+        opponent.getSystem() //show opponent components
     );
 
     discardUnusableCards(); //clear cards with destroyed targets
 
-    Player& opponent = getPlayer(
-        currentPlayer == 1 ? 2 : 1 //get opposing player number
-    );
+    if (!drewThisTurn) { //only draw once per turn
+
+        drewThisTurn = true; //mark auto draw as done
+
+        if (!player.isHandFull()) { //check hand space
+
+            addCard(); //draw card at start of turn
+        }
+    }
 
     ui.displayHand(
         player.getHand(), //show player hand
@@ -455,7 +486,8 @@ void Game::playTurn() { //handle current player's turn
     );
 
     bool canDraw =
-        !player.isHandFull() && !deck.isEmpty(); //check draw action
+        !player.isHandFull() && !deck.isEmpty() && //check draw action
+        !noUsableCards[currentPlayer - 1]; //deck still has a usable card
 
     bool canPlay =
         player.hasCards(); //check play action
@@ -555,6 +587,12 @@ GameResult Game::startGame() { //start a new game
     winner = ""; //clear previous winner
 
     turnsCompleted = 0; //reset turn counter
+
+    drewThisTurn = false; //reset auto draw
+
+    noUsableCards[0] = false; //reset first player's draws
+
+    noUsableCards[1] = false; //reset second player's draws
 
     player1 = Player(player1.getName()); //reset first player
 

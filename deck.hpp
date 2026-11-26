@@ -25,6 +25,7 @@ public:
     int cardsRemaining() const; // how many cards are left
     bool drawCard(Player& player); // draws a card from deck
     void discardCard(const Card& card); // puts a card in the discard pile (ex. after a play)
+    bool returnToBottom(const Card& card); // puts a card back under the deck (ex. card player cant use)
 };
 
 #endif

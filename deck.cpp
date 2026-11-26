@@ -61,3 +61,17 @@ void Deck::discardCard(const Card& card) { // adds a played card to the discard 
         discardedCount++;
     }
 }
+
+bool Deck::returnToBottom(const Card& card) { // puts a card back at the bottom of the deck
+    if (deckCount >= 52) { // deck is already full
+        return false;
+    }
+
+    for (int i = deckCount; i > 0; i--) { // move every card up one spot to make room
+        cards[i] = cards[i - 1];
+    }
+
+    cards[0] = card; // bottom of the deck is index 0, top is deckCount - 1
+    deckCount++;
+    return true;
+}

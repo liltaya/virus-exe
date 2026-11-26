@@ -32,6 +32,8 @@ private:
     bool gameOver; //check if game ended
     string winner; //store winner name
     int turnsCompleted; //track completed turns
+    bool drewThisTurn; //check if auto draw already happened
+    bool noUsableCards[2]; //deck has nothing left each player can use
 
     bool isValidMove(int cardIndex); //check selected card
     bool isPlayableCard(int playerNumber, const Card& card); //check if card target is alive
