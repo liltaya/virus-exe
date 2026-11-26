@@ -1,11 +1,7 @@
 // component.hpp
 // ENSC 251 Final Project - virus.exe
 // Author: Jackson Brhelle
-//
-// Represents a single computer component (CPU, Memory, Network, or Storage).
-// Stores the component's HP and shield status, and handles taking damage,
-// healing, and shielding. HP always stays between 0 and the maximum HP.
-// Once a component reaches 0 HP it is destroyed and cannot be healed.
+// Represents a single computer component
 
 #ifndef COMPONENT_H
 #define COMPONENT_H
