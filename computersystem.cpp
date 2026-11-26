@@ -1,17 +1,7 @@
 // computersystem.cpp
 // ENSC 251 Final Project - virus.exe
 // Author: Jackson Brhelle
-//
-// Represents a player's whole computer system: the four components
-// CPU (20 HP), Memory (10 HP), Network (5 HP), and Storage (15 HP).
-// Gives access to the component matching a card's suit, calculates total
-// remaining HP, and reports whether the whole system is destroyed.
-//
-// Suits are passed as ints, using the same numbering as the Card class:
-//   0 = HEARTS   -> CPU
-//   1 = DIAMONDS -> Memory
-//   2 = CLUBS    -> Network
-//   3 = SPADES   -> Storage
+// Represents a player's whole computer system
 
 #include "computersystem.hpp"
 
